@@ -10,6 +10,9 @@ import * as bcrypt from 'bcrypt';
 import { Employee, EmployeeDocument} from './schema/auth.schema';
 import {LoginDto} from './dto/login.dto';
 import { Role } from '../commom/enum/role.enum';
+import { EmploymentType } from './enum/employmenttype.enum';
+import { Designation } from './enum/designation.enum';
+import { Department } from './enum/department.enum';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -27,9 +30,15 @@ export class AuthService implements OnModuleInit {
       const hashedPassword = await bcrypt.hash('admin123', 10);
 
       await this.employeeModel.create({
-        email: 'admin@gmail.com',
-        password: hashedPassword,
-        role: 'admin',
+         fullName: "Admin User",
+          department:Department.HR,
+          designation: Designation.PRODUCT_MANAGER,
+          employmentType: EmploymentType.FULL_TIME,
+          dateOfJoining: new Date(),
+          phoneNumber: 1234567890,
+          email: "admin2@gmail.com",
+          password: hashedPassword,
+          role:'admin',
       });
 
       console.log(' Default Admin Created');

@@ -4,4 +4,5 @@ export enum Department {
   UI_UX = 'ui_ux',
   WEB3 = 'web3',
   PRODUCT_MANAGER = 'product_manager',
+  HR = 'hr'
 }
