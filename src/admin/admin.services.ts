@@ -209,5 +209,26 @@ export class AdminService{
             rejectedLeaves,
         };
         }
+      async LeavesOverview() {
+       
+
+        const pendingLeaves = await this.leaveModel.countDocuments({
+            Leavestatus: LeavesStatus.PENDING,
+        });
+
+            const approvedLeaves = await this.leaveModel.countDocuments({
+            Leavestatus: LeavesStatus.APPROVED,
+        });
+
+            const rejectedLeaves = await this.leaveModel.countDocuments({
+            Leavestatus: LeavesStatus.REJECT,
+        });
+
+        return {
+            pendingLeaves,
+            approvedLeaves,
+            rejectedLeaves,
+        };
+        }
 
 }

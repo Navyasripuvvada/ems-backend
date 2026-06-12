@@ -64,6 +64,10 @@ export class AdminController {
     return this.adminService.getDashboardStats();
     }
     
+     @Get('leaves/overview')
+    async LeavesOverview() {
+    return this.adminService.LeavesOverview();
+    }
     }
 
 
