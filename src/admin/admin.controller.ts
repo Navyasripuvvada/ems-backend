@@ -59,6 +59,10 @@ export class AdminController {
          console.log("STATUS FROM URL:", status);
         return this.adminService.getEmployeesByStatus(status)
     }
+   @Get('dashboard')
+    async getDashboardStats() {
+    return this.adminService.getDashboardStats();
+    }
     
     }
 

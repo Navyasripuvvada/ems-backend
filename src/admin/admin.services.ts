@@ -17,6 +17,8 @@ import { SetPasswordDto } from './dto/setpassword.dto';
 import { UpdateEmployeeDto } from './dto/updateemployee.dto';
 import { Department } from 'src/auth/enum/department.enum';
 import { Status } from 'src/auth/enum/status.enum';
+import { Leave,LeaveDocument } from 'src/leaves/schema/leaves.schema';
+import { LeavesStatus } from 'src/leaves/leavesenum/leave.enum';
 
 
 @Injectable()
@@ -24,6 +26,8 @@ export class AdminService{
     constructor(
     @InjectModel(Employee.name)
     private readonly employeeModel: Model<EmployeeDocument>,
+     @InjectModel(Leave.name)
+    private readonly leaveModel: Model<LeaveDocument>,
      private readonly mailService: MailService,
     ){}
 
@@ -182,5 +186,28 @@ export class AdminService{
            throw new BadRequestException(error.message)
         }
     }
+        async getDashboardStats() {
+        const totalEmployees =
+            await this.employeeModel.countDocuments();
+
+        const pendingLeaves = await this.leaveModel.countDocuments({
+            Leavestatus: LeavesStatus.PENDING,
+        });
+
+            const approvedLeaves = await this.leaveModel.countDocuments({
+            Leavestatus: LeavesStatus.APPROVED,
+        });
+
+            const rejectedLeaves = await this.leaveModel.countDocuments({
+            Leavestatus: LeavesStatus.REJECT,
+        });
+
+        return {
+            totalEmployees,
+            pendingLeaves,
+            approvedLeaves,
+            rejectedLeaves,
+        };
+        }
 
 }

@@ -8,12 +8,18 @@ import {AdminController} from './admin.controller';
 import { Employee, EmployeeSchema } from '../auth/schema/auth.schema';
 import { AdminService } from './admin.services';
 import { MailModule } from '../mail/mail.module';
+import { LeavesModule } from 'src/leaves/leaves.module';
+import { Leave,LeaveSchema } from 'src/leaves/schema/leaves.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
       {
         name: Employee.name,
         schema: EmployeeSchema,
+      },
+      {
+        name: Leave.name,
+        schema: LeaveSchema,
       },
     ]),
       JwtModule.registerAsync({

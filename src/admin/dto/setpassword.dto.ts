@@ -19,4 +19,5 @@ export class SetPasswordDto {
   @IsString()
   @MinLength(8)
   confirmPassword: string;
-}
+}3
+
