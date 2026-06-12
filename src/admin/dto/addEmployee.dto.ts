@@ -20,7 +20,7 @@ export class AddEmployeeDto {
   email: string;
 
   @IsNotEmpty()
-  @Matches(/^[0-9]{10}$/, {
+ @Matches(/^[0-9]{10}$/, {
     message: 'Phone number must be 10 digits',
   })
   phoneNumber: number;
