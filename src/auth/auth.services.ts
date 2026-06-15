@@ -70,6 +70,7 @@ export class AuthService implements OnModuleInit {
       role: employee.role,
       
     };
+    
 
     const token = await this.jwtService.signAsync(payload,{
                 secret: process.env.JWt_SCERET,

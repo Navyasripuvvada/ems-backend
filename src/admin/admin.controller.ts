@@ -1,4 +1,4 @@
-import { Controller, Post, Body,Get,Delete,Param,Put, UseGuards,Query } from '@nestjs/common';
+import { Controller, Post, Body,Get,Delete,Param,Put, Req, UseGuards,Query,ForbiddenException } from '@nestjs/common';
 import { AdminService } from './admin.services';
 import { AddEmployeeDto } from './dto/addEmployee.dto';
 import { SetPasswordDto } from './dto/setpassword.dto';
@@ -12,7 +12,10 @@ export class AdminController {
   
     @Post('add-employee')
     @UseGuards(JwtAuthGuard)
-    addEmployee(@Body() addEmployeeDto: AddEmployeeDto){
+    addEmployee( @Req() req,@Body() addEmployeeDto: AddEmployeeDto){
+          if (req.user.role !== 'admin') {
+            throw new ForbiddenException('Only admin can view all leaves');
+          }
         return this.adminService.addEmployee(addEmployeeDto);
     }
 
@@ -23,27 +26,40 @@ export class AdminController {
 
     @Delete('delete-employee/:id')
     @UseGuards(JwtAuthGuard)
-    async deleteEmployee(@Param('id') employeeId: string) {
+    async deleteEmployee(@Req() req ,@Param('id') employeeId: string) {
+        if (req.user.role !== 'admin') {
+            throw new ForbiddenException('Only admin can view all leaves');
+          }
         return this.adminService.deleteEmployee(employeeId);
     }
 
 
     @Get('employees')
     @UseGuards(JwtAuthGuard)
-    async getAllEmployees(@Query('status') status:Status){
+    async getAllEmployees(@Req() req,@Query('status') status:Status){
+         if (req.user.role !== 'admin') {
+            throw new ForbiddenException('Only admin can view all leaves');
+          }
+
         return this.adminService.getAllEmployees(status);
     }
 
 
     @Get('employee/:id')
     @UseGuards(JwtAuthGuard)
-        async getEmployeeById(@Param('id') employeeId: string){
+        async getEmployeeById(@Req() req,@Param('id') employeeId: string){
+            if (req.user.role !== 'admin') {
+            throw new ForbiddenException('Only admin can view all leaves');
+          }
          return this.adminService.getEmployeeById(employeeId);
         }
     
     @Put('employee/:id')
     @UseGuards(JwtAuthGuard)
-    async updateEmployee(@Param('id') employeeId:string ,@Body() updateEmployeeDto:UpdateEmployeeDto){
+    async updateEmployee(@Req() req,@Param('id') employeeId:string ,@Body() updateEmployeeDto:UpdateEmployeeDto){
+          if (req.user.role !== 'admin') {
+            throw new ForbiddenException('Only admin can view all leaves');
+          }
         return this.adminService.updateEmployee(employeeId,updateEmployeeDto)
     }
 
@@ -60,12 +76,20 @@ export class AdminController {
         return this.adminService.getEmployeesByStatus(status)
     }
    @Get('dashboard')
-    async getDashboardStats() {
+    @UseGuards(JwtAuthGuard)
+    async getDashboardStats(@Req() req) {
+         if (req.user.role !== 'admin') {
+            throw new ForbiddenException('Only admin can view all leaves');
+          }
     return this.adminService.getDashboardStats();
     }
     
-     @Get('leaves/overview')
-    async LeavesOverview() {
+    @Get('leaves/overview')
+    @UseGuards(JwtAuthGuard)
+    async LeavesOverview(@Req() req) {
+         if (req.user.role !== 'admin') {
+            throw new ForbiddenException('Only admin can view all leaves');
+          }
     return this.adminService.LeavesOverview();
     }
     }

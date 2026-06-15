@@ -4,6 +4,7 @@ import {Designation} from '../enum/designation.enum';
 import {Department} from '../enum/department.enum';
 import {EmploymentType} from '../enum/employmenttype.enum';
 import { Status } from '../enum/status.enum';
+import { Gender } from '../enum/gender.enum';
 
 export type EmployeeDocument = HydratedDocument<Employee>;
 @Schema({
@@ -91,6 +92,23 @@ export class Employee{
         default: 0,
     })
     salary: number;
+
+    @Prop({
+        type:String,
+    })
+    address:string|null;
+
+    @Prop({
+        type:Date,
+    })
+    dateOfBirth:Date;
+
+   @Prop({
+    type: String,
+    enum: Object.values(Gender),
+    required: true,
+    })
+    gender: Gender;
 
 }
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);
