@@ -210,11 +210,28 @@ export class LeavesService{
     if (!employee) {
         throw new NotFoundException('Employee not found');
     }
+    const approvedLeaves = await this.leaveModel.aggregate([
+    {
+      $match: {
+        employeeId: new Types.ObjectId(employeeId),
+        Leavestatus: LeavesStatus.APPROVED,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: '$days' },
+      },
+    },
+  ]);
+
+    const leavesTaken = approvedLeaves[0]?.total || 0;
+    const totalLeaves = 15 - leavesTaken;
 
     return {
         employeeId: employee._id,
         fullName: employee.fullName,
-        totalLeaves: employee.totalLeaves,
+        totalLeaves,
     };
     }
    async getMyLeaveHistory(employeeId: string) {
