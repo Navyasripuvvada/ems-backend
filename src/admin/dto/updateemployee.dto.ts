@@ -6,13 +6,14 @@ import {
   IsDateString,
   Matches,
   IsNumber, 
-  IsDate
+  IsDate,IsOptional,
 } from 'class-validator';
 import { EmploymentType } from '../../auth/enum/employmenttype.enum';
 import { Department } from '../../auth/enum/department.enum';
 import { Designation } from '../../auth/enum/designation.enum';
 import { Status } from 'src/auth/enum/status.enum';
 import { Gender } from 'src/auth/enum/gender.enum';
+import { Type } from 'class-transformer';
 
 export class UpdateEmployeeDto {
   @IsNotEmpty()
@@ -55,6 +56,8 @@ export class UpdateEmployeeDto {
   @IsNumber()
   salary:Number;
 
+ @IsOptional()
+  @Type(() => Date)
   @IsDate()
   dateOfBirth:Date;
 

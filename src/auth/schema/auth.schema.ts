@@ -106,7 +106,6 @@ export class Employee{
    @Prop({
     type: String,
     enum: Object.values(Gender),
-    required: true,
     })
     gender: Gender;
 
