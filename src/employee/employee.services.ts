@@ -40,9 +40,10 @@ async getEmployeeProfile(employeeId: string) {
 
 async getEmployeeDashboard(employeeId: string) {
   const employee = await this.employeeModel.findById(employeeId);
+
   if (!employee) {
-  throw new NotFoundException('Employee not found');
-}
+    throw new NotFoundException('Employee not found');
+  }
 
   const approvedLeaves = await this.leaveModel.aggregate([
     {
@@ -66,10 +67,12 @@ async getEmployeeDashboard(employeeId: string) {
 
   const leavesTaken = approvedLeaves[0]?.total || 0;
 
+  const totalLeaves = 15; 
+
   return {
-    totalLeaves: 20,
+    totalLeaves,
     leavesTaken,
-    remainingLeaves: employee.totalLeaves,
+    remainingLeaves: totalLeaves - leavesTaken,
     pendingRequests,
   };
 }
