@@ -37,6 +37,9 @@ export class Leave {
   @Prop({ required: true })
    days: number;
 
+   @Prop({required:true})
+   leaveType:string;
+
  
 }
 

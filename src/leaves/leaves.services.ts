@@ -47,6 +47,7 @@ export class LeavesService{
             fromDate,
             toDate,
             days,
+            leaveType: applyLeaveDto.leaveType,
             Leavestatus: LeavesStatus.PENDING,
         });
 
@@ -237,6 +238,7 @@ export class LeavesService{
         status: leave.Leavestatus,
         adminComment: leave.adminComment,
         createdAt: leave.createdAt,
+        leaveType:leave.leaveType,
         };
     });
 

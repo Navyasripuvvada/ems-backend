@@ -10,4 +10,7 @@ export class ApplyLeaveDto {
 
   @IsDateString()
   toDate: string;
+
+  @IsString()
+  leaveType:string;
 }
