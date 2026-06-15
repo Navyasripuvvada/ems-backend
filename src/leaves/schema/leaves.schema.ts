@@ -7,6 +7,9 @@ export type LeaveDocument = HydratedDocument<Leave>;
 @Schema({ timestamps: true })
 export class Leave {
 
+  createdAt?: Date;
+  updatedAt?: Date;
+
  
   @Prop({ type: Types.ObjectId, ref: 'Employee', required: true })
   employeeId: Types.ObjectId;
@@ -30,6 +33,11 @@ export class Leave {
 
   @Prop({ default: '' })
   adminComment: string;
+
+  @Prop({ required: true })
+   days: number;
+
+ 
 }
 
 export const LeaveSchema = SchemaFactory.createForClass(Leave);

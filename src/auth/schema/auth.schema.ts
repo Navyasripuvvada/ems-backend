@@ -99,16 +99,17 @@ export class Employee{
     address:string|null;
 
     @Prop({
-        type:Date,
     })
     dateOfBirth:Date;
 
    @Prop({
     type: String,
     enum: Object.values(Gender),
-    required: true,
     })
     gender: Gender;
+
+   @Prop({ default: 15 })
+   totalLeaves: number;
 
 }
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);

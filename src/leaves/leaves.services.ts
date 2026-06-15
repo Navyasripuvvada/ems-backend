@@ -2,7 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   OnModuleInit,
-  Inject,
+  Inject,NotFoundException,BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -20,20 +20,40 @@ export class LeavesService{
         @InjectModel(Leave.name)
         private leaveModel :Model<LeaveDocument>,
         @InjectModel(Employee.name)
-        private emploeeModel :Model<EmployeeDocument>
+        private employeeModel :Model<EmployeeDocument>
     ){}
-    async applyLeave(employeeId:string,applyLeaveDto:ApplyLeaveDto,){
+   async applyLeave(
+        employeeId: string,
+        applyLeaveDto: ApplyLeaveDto,
+        ) {
+        const fromDate = new Date(applyLeaveDto.fromDate);
+        const toDate = new Date(applyLeaveDto.toDate);
+
+        if (toDate < fromDate) {
+            throw new BadRequestException(
+            'To date cannot be earlier than From date',
+            );
+        }
+
+        const days =
+            Math.ceil(
+            (toDate.getTime() - fromDate.getTime()) /
+                (1000 * 60 * 60 * 24),
+            ) + 1;
+
         const leave = await this.leaveModel.create({
-            employeeId : new Types.ObjectId(employeeId),
+            employeeId: new Types.ObjectId(employeeId),
             reason: applyLeaveDto.reason,
-            fromDate: applyLeaveDto.fromDate,
-            toDate: applyLeaveDto.toDate,
+            fromDate,
+            toDate,
+            days,
             Leavestatus: LeavesStatus.PENDING,
-        
+        });
 
-        })
-        return {message:'leave applied successfully',leave}
-
+        return {
+            message: 'Leave applied successfully',
+            leave,
+        };
     }
    async getAllLeaves(status?: LeavesStatus) {
         const pipeline: any[] = [
@@ -87,25 +107,49 @@ export class LeavesService{
         };
         }
 
-    async updateLeaveStatus(updateLeaveStatusDto:UpdateLeaveStatusDto,leaveId: string,) {
-        const result = await this.leaveModel.findByIdAndUpdate(
-            leaveId,
-            {
-            Leavestatus: updateLeaveStatusDto.Leavestatus,
-            adminComment: updateLeaveStatusDto.adminComment || '',
-            },
-            { new: true }, // returns updated document
-        );
+    async updateLeaveStatus(
+            updateLeaveStatusDto: UpdateLeaveStatusDto,
+            leaveId: string,
+            ) {
+            const leave = await this.leaveModel.findById(leaveId);
 
-        if (!result) {
-            throw new Error('Leave not found');
-        }
+            if (!leave) {
+                throw new Error('Leave not found');
+            }
 
-        return {
-            message: 'Leave status updated successfully',
-            leave: result,
-        };
-        }
+            if (
+                leave.Leavestatus !== LeavesStatus.APPROVED &&
+                updateLeaveStatusDto.Leavestatus === LeavesStatus.APPROVED
+            ) {
+                const employee = await this.employeeModel.findById(
+                leave.employeeId,
+                );
+
+                if (!employee) {
+                throw new Error('Employee not found');
+                }
+
+                const days =
+                Math.ceil(
+                    (leave.toDate.getTime() - leave.fromDate.getTime()) /
+                    (1000 * 60 * 60 * 24),
+                ) + 1;
+
+                employee.totalLeaves -= days;
+
+                await employee.save();
+            }
+
+            leave.Leavestatus = updateLeaveStatusDto.Leavestatus;
+            leave.adminComment = updateLeaveStatusDto.adminComment || '';
+
+            await leave.save();
+
+            return {
+                message: 'Leave status updated successfully',
+                leave,
+            };
+            }
 
         async searchLeaves(search: string) {
             return this.leaveModel.aggregate([
@@ -159,5 +203,47 @@ export class LeavesService{
                 },
             ]);
             }
+    async getLeaveBalance(employeeId: string) {
+    const employee = await this.employeeModel.findById(employeeId);
+
+    if (!employee) {
+        throw new NotFoundException('Employee not found');
+    }
+
+    return {
+        employeeId: employee._id,
+        fullName: employee.fullName,
+        totalLeaves: employee.totalLeaves,
+    };
+    }
+   async getMyLeaveHistory(employeeId: string) {
+    const leaves = await this.leaveModel
+        .find({  employeeId: new Types.ObjectId(employeeId) })
+        .sort({ createdAt: -1 });
+
+    const leaveHistory = leaves.map((leave) => {
+        const days =
+        Math.ceil(
+            (leave.toDate.getTime() - leave.fromDate.getTime()) /
+            (1000 * 60 * 60 * 24),
+        ) + 1;
+
+        return {
+        _id: leave._id,
+        reason: leave.reason,
+        fromDate: leave.fromDate,
+        toDate: leave.toDate,
+        days,
+        status: leave.Leavestatus,
+        adminComment: leave.adminComment,
+        createdAt: leave.createdAt,
+        };
+    });
+
+    return {
+        totalLeaveRequests: leaveHistory.length,
+        leaves: leaveHistory,
+    };
+    }
 }
 
