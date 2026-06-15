@@ -11,4 +11,11 @@ export class EmployeeController {
     async getProfile(@Req() req){
         return this.employeeService.getEmployeeProfile(req.user.sub)
     }
+      @Get('dashboard')
+        @UseGuards(JwtAuthGuard)
+        async getDashboard(@Req() req) {
+            return this.employeeService.getEmployeeDashboard(
+            req.user.sub,
+            );
+        }
 }

@@ -113,7 +113,8 @@ export class AdminService{
             }
 
         }catch(error:any){
-            throw new BadRequestException('Error occurred while deleting employee');
+            throw new BadRequestException({ message: 'Error occurred while updating employee',
+    error: error.message,});
         }
 
     }
@@ -157,7 +158,8 @@ export class AdminService{
                 message:"Employee updated successfully", updateEmployee
             }
         }catch(error:any){
-            throw new BadRequestException('Error occurred while updating employee');
+            throw new BadRequestException({ message: 'Error occurred while updating employee',
+    error: error.message,});
         }
     }
     async getEmployeesByDepartment(department:Department){

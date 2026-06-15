@@ -59,7 +59,7 @@ export class UpdateEmployeeDto {
  @IsOptional()
   @Type(() => Date)
   @IsDate()
-  dateOfBirth:Date;
+  dateOfBirth: Date;
 
   @IsString()
   address:string;

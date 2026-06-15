@@ -45,5 +45,18 @@ async getAllLeaves(
     searchLeaves(@Query('search') search: string) {
     return this.leavesService.searchLeaves(search);
     }
+
+     @UseGuards(JwtAuthGuard)
+      @Get('leave-balance')
+    async getLeaveBalance(@Req() req) {
+      console.log(req.user)
+      return this.leavesService.getLeaveBalance(req.user.sub);
+    }
+    @Get('my-leaves')
+    @UseGuards(JwtAuthGuard)
+    async getMyLeaveHistory(@Req() req) {
+      console.log(req.user);
+      return this.leavesService.getMyLeaveHistory(req.user.sub);
+    }
 }
 
