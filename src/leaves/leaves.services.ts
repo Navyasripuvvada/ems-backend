@@ -264,5 +264,11 @@ export class LeavesService{
         leaves: leaveHistory,
     };
     }
+    async deleteLeaves(leaveId:string){
+        const result = await this.leaveModel.findByIdAndDelete(leaveId)
+        return ({
+            message:'leave deleted successfully',result
+        })
+    }
 }
 

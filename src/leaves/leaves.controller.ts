@@ -1,4 +1,4 @@
-import { Controller, Post,Put,Param, Body,Req,Get,ForbiddenException,Query } from '@nestjs/common';
+import { Controller, Post,Put,Param, Body,Req,Get,ForbiddenException,Query, Delete } from '@nestjs/common';
 import { LeavesService } from './leaves.services';
 import { ApplyLeaveDto } from './schema/dto/applyleave.dto';
 import { JwtAuthGuard } from 'src/admin/guards/admin.guard';
@@ -57,6 +57,11 @@ async getAllLeaves(
     async getMyLeaveHistory(@Req() req) {
       console.log(req.user);
       return this.leavesService.getMyLeaveHistory(req.user.sub);
+    }
+
+    @Delete(':id')
+    async deleteLeaves(@Param('id') id:string){
+      return this.leavesService.deleteLeaves(id)
     }
 }
 
