@@ -111,5 +111,14 @@ export class Employee{
    @Prop({ default: 15 })
    totalLeaves: number;
 
+   @Prop()
+    faceImage: string;
+
+    @Prop({ default: false })
+    isFaceRegistered: boolean;
+
+    @Prop({ type: [Number] })
+   faceDescriptor: number[];
+
 }
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);

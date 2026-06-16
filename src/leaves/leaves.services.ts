@@ -13,6 +13,8 @@ import { Types } from 'mongoose';
 import { LeavesStatus } from './leavesenum/leave.enum';
 import { Employee, EmployeeDocument } from 'src/auth/schema/auth.schema';
 import { UpdateLeaveStatusDto } from './schema/dto/updateleave.dto';
+import { Attendance,AttendanceDocument } from 'src/attendance/schema/attendance.schema';
+import { AttendanceStatus } from 'src/attendance/enum/attendance.enum';
 
 @Injectable()
 export class LeavesService{
@@ -20,7 +22,10 @@ export class LeavesService{
         @InjectModel(Leave.name)
         private leaveModel :Model<LeaveDocument>,
         @InjectModel(Employee.name)
-        private employeeModel :Model<EmployeeDocument>
+        private employeeModel :Model<EmployeeDocument>,
+
+        @InjectModel(Attendance.name)
+        private attendanceModel: Model<AttendanceDocument>,
     ){}
    async applyLeave(
         employeeId: string,
@@ -139,6 +144,29 @@ export class LeavesService{
                 employee.totalLeaves -= days;
 
                 await employee.save();
+                let currentDate = new Date(leave.fromDate);
+                const endDate = new Date(leave.toDate);
+
+                while (currentDate <= endDate) {
+                const formattedDate =
+                    currentDate.toISOString().split('T')[0];
+
+                const existingAttendance =
+                    await this.attendanceModel.findOne({
+                    employeeId: leave.employeeId,
+                    date: formattedDate,
+                    });
+
+                if (!existingAttendance) {
+                    await this.attendanceModel.create({
+                    employeeId: leave.employeeId,
+                    date: formattedDate,
+                    status: AttendanceStatus.LEAVE,
+                    });
+                }
+
+                currentDate.setDate(currentDate.getDate() + 1);
+                }
             }
 
             leave.Leavestatus = updateLeaveStatusDto.Leavestatus;

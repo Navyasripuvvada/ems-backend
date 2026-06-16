@@ -76,4 +76,27 @@ async getEmployeeDashboard(employeeId: string) {
     pendingRequests,
   };
 }
+//Register face
+async registerFace(
+  employeeId: string,
+  file: Express.Multer.File,
+  descriptor: number[],
+) {
+  const employee = await this.employeeModel.findById(employeeId);
+
+  if (!employee) {
+    throw new NotFoundException('Employee not found');
+  }
+
+  employee.faceImage = file.filename;
+  employee.isFaceRegistered = true;
+  employee.faceDescriptor = descriptor; 
+
+  await employee.save();
+
+  return {
+    message: 'Face registered successfully',
+    fileName: file.filename,
+  };
+}
 }

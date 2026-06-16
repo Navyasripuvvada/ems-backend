@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { EmployeeModule } from './employee/employee.module';
 import { LeavesModule } from './leaves/leaves.module';
+import { AttendanceModule } from './attendance/attendance.module';
 
 
 @Module({
@@ -31,6 +32,7 @@ import { LeavesModule } from './leaves/leaves.module';
     AdminModule,
     EmployeeModule,
     LeavesModule,
+    AttendanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
