@@ -102,7 +102,7 @@ async markAttendance(
 
   const existingAttendance =
     await this.attendanceModel.findOne({
-      employeeId,
+       employeeId: new Types.ObjectId(employeeId),
       date: today,
     });
 
@@ -114,7 +114,7 @@ async markAttendance(
 
   const attendance =
     await this.attendanceModel.create({
-      employeeId,
+      employeeId: new Types.ObjectId(employeeId),
       date: today,
       checkInTime:
         new Date().toLocaleTimeString(),
@@ -127,6 +127,7 @@ async markAttendance(
   };
 }
 
+// attendance.service.ts
 async getAllAttendance(employeeId?: string, page = 1, limit = 10) {
   try {
     const match: any = {};
@@ -135,43 +136,28 @@ async getAllAttendance(employeeId?: string, page = 1, limit = 10) {
       match.employeeId = new Types.ObjectId(employeeId);
     }
 
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-
-    const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
-
     const skip = (page - 1) * limit;
 
     const data = await this.attendanceModel.aggregate([
       { $match: match },
 
-     
       {
-        $addFields: {
-          isToday: {
-            $cond: [
-              {
-                $and: [
-                  { $gte: ["$date", todayStart] },
-                  { $lte: ["$date", todayEnd] },
-                ],
-              },
-              1,
-              0,
-            ],
-          },
+        $lookup: {
+          from: 'employees',
+          localField: 'employeeId',
+          foreignField: '_id',
+          as: 'employee',
         },
       },
 
-     
       {
-        $sort: {
-          isToday: -1,
-          date: -1,
+        $unwind: {
+          path: '$employee',
+          preserveNullAndEmptyArrays: true,
         },
       },
 
+      { $sort: { date: -1 } },
       { $skip: skip },
       { $limit: limit },
     ]);

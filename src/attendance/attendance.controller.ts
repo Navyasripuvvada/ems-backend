@@ -18,15 +18,17 @@ export class AttendanceController {
     );
     }
 
-    @Get('all')
+   @Get('all')
     @UseGuards(JwtAuthGuard)
     async getAllAttendance(
     @Query('employeeId') employeeId?: string,
-    @Query('date') date?: number,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
     ) {
     return this.attendanceService.getAllAttendance(
         employeeId,
-        date,
+        Number(page) || 1,
+        Number(limit) || 10,
     );
     }
     @Get('my')
