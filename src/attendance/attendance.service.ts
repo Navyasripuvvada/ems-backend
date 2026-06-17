@@ -128,6 +128,7 @@ async markAttendance(
 }
 
 async getAllAttendance(employeeId?: string, date?: string) {
+  try{
   const filter: any = {};
 
   if (employeeId) {
@@ -140,8 +141,12 @@ async getAllAttendance(employeeId?: string, date?: string) {
 
   return this.attendanceModel
     .find(filter)
+    .select('date checkInTime checkOutTime status employeeId')
     .populate('employeeId', 'fullName email role')
     .sort({ createdAt: -1 });
+}catch(err:any){
+  throw new BadRequestException(err.message)
+}
 }
 async getMyAttendance(employeeId: string) {
   const attendance = await this.attendanceModel
