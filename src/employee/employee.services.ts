@@ -88,9 +88,19 @@ async registerFace(
     throw new NotFoundException('Employee not found');
   }
 
+  // Check if face is already registered
+  if (
+    employee.isFaceRegistered ||
+    (employee.faceDescriptor && employee.faceDescriptor.length > 0)
+  ) {
+    throw new BadRequestException(
+      'Face already registered for this employee',
+    );
+  }
+
   employee.faceImage = file.filename;
   employee.isFaceRegistered = true;
-  employee.faceDescriptor = descriptor; 
+  employee.faceDescriptor = descriptor;
 
   await employee.save();
 
