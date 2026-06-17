@@ -39,4 +39,26 @@ export class AttendanceController {
         req.user.sub,
     );
     }
+
+@Get("monthly")
+@UseGuards(JwtAuthGuard)
+async getMonthlyAttendance(
+  @Req() req,
+  @Query("month") month: number,
+  @Query("year") year: number,
+) {
+  console.log("req.user =", req.user);
+
+  const employeeId = req.user.sub;
+
+  console.log("employeeId =", employeeId);
+  console.log("month =", month);
+  console.log("year =", year);
+
+  return this.attendanceService.getMonthlyAttendance(
+    employeeId,
+    Number(month),
+    Number(year),
+  );
+}
 }

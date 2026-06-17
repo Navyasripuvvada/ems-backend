@@ -10,7 +10,7 @@ export class Attendance {
   employeeId: Types.ObjectId;
 
   @Prop({ required: true })
-  date: string;
+  date: Date;
 
   @Prop({ required: true })
   checkInTime: string;

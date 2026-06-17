@@ -12,6 +12,7 @@ import { Model } from 'mongoose';
 import { Employee, EmployeeDocument} from '../auth/schema/auth.schema';
 import { Attendance,AttendanceDocument } from './schema/attendance.schema';
 import { AttendanceStatus } from './enum/attendance.enum';
+import { Types } from 'mongoose';
 @Injectable()
 export class AttendanceService{
    constructor(
@@ -150,6 +151,62 @@ async getMyAttendance(employeeId: string) {
   return {
     message: 'Attendance fetched successfully',
     attendance,
+  };
+}
+
+async getMonthlyAttendance(
+  employeeId: string,
+  month: number,
+  year: number,
+) {
+  const startDate = new Date(year, month - 1, 1);
+
+  const endDate = new Date(year, month, 0);
+  endDate.setHours(23, 59, 59, 999);
+
+  const records = await this.attendanceModel.find({
+    employeeId: employeeId,
+    date: {
+      $gte: startDate,
+      $lte: endDate,
+    },
+  });
+
+  const attendanceMap = new Map<number, AttendanceStatus>();
+
+  records.forEach((record) => {
+    const day = new Date(record.date).getDate();
+    attendanceMap.set(day, record.status);
+  });
+
+  const totalDaysInMonth = new Date(year, month, 0).getDate();
+
+  const today = new Date();
+
+  let lastDayToShow = totalDaysInMonth;
+
+  // For current month, show only until today
+  if (
+    year === today.getFullYear() &&
+    month === today.getMonth() + 1
+  ) {
+    lastDayToShow = today.getDate();
+  }
+
+  const calendar: { day: number; status: AttendanceStatus }[] = [];
+
+  for (let day = 1; day <= lastDayToShow; day++) {
+    calendar.push({
+      day,
+      status: attendanceMap.get(day) || AttendanceStatus.LEAVE,
+    });
+  }
+
+  return {
+    month,
+    year,
+    totalDays: lastDayToShow,
+    calendar,
   };
 }
 }
