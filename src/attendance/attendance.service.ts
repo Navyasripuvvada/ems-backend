@@ -127,26 +127,67 @@ async markAttendance(
   };
 }
 
-async getAllAttendance(employeeId?: string, date?: string) {
-  try{
-  const filter: any = {};
+async getAllAttendance(employeeId?: string, page = 1, limit = 10) {
+  try {
+    const match: any = {};
 
-  if (employeeId) {
-    filter.employeeId = employeeId;
+    if (employeeId) {
+      match.employeeId = new Types.ObjectId(employeeId);
+    }
+
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    const skip = (page - 1) * limit;
+
+    const data = await this.attendanceModel.aggregate([
+      { $match: match },
+
+     
+      {
+        $addFields: {
+          isToday: {
+            $cond: [
+              {
+                $and: [
+                  { $gte: ["$date", todayStart] },
+                  { $lte: ["$date", todayEnd] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+        },
+      },
+
+     
+      {
+        $sort: {
+          isToday: -1,
+          date: -1,
+        },
+      },
+
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    const total = await this.attendanceModel.countDocuments(match);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  } catch (err: any) {
+    throw new BadRequestException(err.message);
   }
-
-  if (date) {
-    filter.date = date;
-  }
-
-  return this.attendanceModel
-    .find(filter)
-    .select('date checkInTime checkOutTime status employeeId')
-    .populate('employeeId', 'fullName email role')
-    .sort({ createdAt: -1 });
-}catch(err:any){
-  throw new BadRequestException(err.message)
-}
 }
 async getMyAttendance(employeeId: string) {
   const attendance = await this.attendanceModel

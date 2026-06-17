@@ -22,7 +22,7 @@ export class AttendanceController {
     @UseGuards(JwtAuthGuard)
     async getAllAttendance(
     @Query('employeeId') employeeId?: string,
-    @Query('date') date?: string,
+    @Query('date') date?: number,
     ) {
     return this.attendanceService.getAllAttendance(
         employeeId,
