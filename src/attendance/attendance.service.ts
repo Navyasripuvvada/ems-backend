@@ -197,7 +197,7 @@ async getMonthlyAttendance(
   endDate.setHours(23, 59, 59, 999);
 
   const records = await this.attendanceModel.find({
-    employeeId: employeeId,
+    employeeId: new Types.ObjectId(employeeId),
     date: {
       $gte: startDate,
       $lte: endDate,
