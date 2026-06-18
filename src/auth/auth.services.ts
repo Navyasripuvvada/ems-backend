@@ -119,6 +119,7 @@ export class AuthService implements OnModuleInit {
 
   return {
     message: 'Password reset link sent successfully',
+    token
   };
 }
 async resetPassword(
