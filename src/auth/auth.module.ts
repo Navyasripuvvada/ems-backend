@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 
 import { Employee, EmployeeSchema } from './schema/auth.schema';
 import { AuthService } from './auth.services';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { AuthService } from './auth.services';
     useFactory: (configService: ConfigService) => ({
       secret: configService.get<string>("JWT_SECRET"),
     }),
-}),
+}),MailModule
   ],
 
   controllers: [AuthController],

@@ -2,6 +2,8 @@ import {
   Injectable,
   UnauthorizedException,
   OnModuleInit,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -13,6 +15,8 @@ import { Role } from '../commom/enum/role.enum';
 import { EmploymentType } from './enum/employmenttype.enum';
 import { Designation } from './enum/designation.enum';
 import { Department } from './enum/department.enum';
+import { MailService } from 'src/mail/mail.service';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -20,6 +24,7 @@ export class AuthService implements OnModuleInit {
     private readonly jwtService: JwtService,
     @InjectModel(Employee.name)
     private employeeModel: Model<EmployeeDocument>,
+     private mailService: MailService,
   ) {}
 
  
@@ -67,6 +72,7 @@ export class AuthService implements OnModuleInit {
     const payload = {
       sub: employee._id,
       email: employee.email,
+      name: employee.fullName,
       role: employee.role,
       
     };
@@ -81,6 +87,77 @@ export class AuthService implements OnModuleInit {
       message: 'Login successful',
       token: token,
       role: employee.role,
+      name:employee.fullName,
     };
   }
+
+ async forgotPassword(email: string) {
+  const employee = await this.employeeModel.findOne({
+    email,
+  });
+
+  if (!employee) {
+    throw new NotFoundException(
+      'Employee not found',
+    );
+  }
+
+  const token = crypto.randomBytes(32).toString('hex');
+
+  employee.resetPasswordToken = token;
+  employee.resetPasswordExpires = new Date(
+    Date.now() + 60 * 60 * 1000,
+  );
+
+  await employee.save();
+
+  await this.mailService.sendResetPasswordEmail(
+    employee.email,
+    employee.fullName,
+    token,
+  );
+
+  return {
+    message: 'Password reset link sent successfully',
+  };
+}
+async resetPassword(
+  token: string,
+  newPassword: string,
+) {
+  const employee = await this.employeeModel.findOne({
+    resetPasswordToken: token,
+  });
+
+  if (!employee) {
+    throw new BadRequestException(
+      'Invalid reset token',
+    );
+  }
+
+  if (
+    employee.resetPasswordExpires &&
+    employee.resetPasswordExpires < new Date()
+  ) {
+    throw new BadRequestException(
+      'Reset token has expired',
+    );
+  }
+
+  const hashedPassword = await bcrypt.hash(
+    newPassword,
+    10,
+  );
+
+  employee.password = hashedPassword;
+
+  employee.resetPasswordToken = undefined;
+  employee.resetPasswordExpires = undefined;
+
+  await employee.save();
+
+  return {
+    message: 'Password reset successfully',
+  };
+}
 }

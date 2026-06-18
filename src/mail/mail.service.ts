@@ -34,4 +34,35 @@ export class MailService{
     console.error('Mail Error:', error);
   }
   }
+  async sendResetPasswordEmail(
+  email: string,
+  fullName: string,
+  token: string,
+) {
+  try {
+    const resetLink =
+      `http://localhost:3000/reset-password?token=${token}`;
+
+    const info = await this.transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Reset Your Password',
+      html: `
+        <h2>Hello ${fullName}</h2>
+        <p>You requested a password reset.</p>
+        <p>Click the link below to reset your password:</p>
+
+        <a href="${resetLink}">
+          Reset Password
+        </a>
+
+        <p>This link expires in 1 hour.</p>
+      `,
+    });
+
+    console.log('Mail sent:', info.messageId);
+  } catch (error) {
+    console.error('Mail Error:', error);
+  }
+}
 }

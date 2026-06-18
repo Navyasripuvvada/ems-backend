@@ -120,5 +120,11 @@ export class Employee{
     @Prop({ type: [Number] })
    faceDescriptor: number[];
 
+   @Prop()
+    resetPasswordToken?: string;
+
+    @Prop()
+    resetPasswordExpires?: Date;
+
 }
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);

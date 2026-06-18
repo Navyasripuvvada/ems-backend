@@ -52,7 +52,6 @@ export class LeavesService{
             fromDate,
             toDate,
             days,
-            leaveType: applyLeaveDto.leaveType,
             Leavestatus: LeavesStatus.PENDING,
         });
 
