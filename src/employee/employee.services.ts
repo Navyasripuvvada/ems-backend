@@ -109,4 +109,28 @@ async registerFace(
     fileName: file.filename,
   };
 }
+
+async uploadProfilePicture(
+  employeeId: string,
+  file: Express.Multer.File,
+) {
+  const employee =
+    await this.employeeModel.findById(employeeId);
+
+  if (!employee) {
+    throw new NotFoundException(
+      'Employee not found',
+    );
+  }
+
+  employee.profilePicture =
+    `/uploads/profile-pictures/${file.filename}`;
+
+  await employee.save();
+
+  return {
+    message: 'Profile picture uploaded successfully',
+    profilePicture: employee.profilePicture,
+  };
+}
 }

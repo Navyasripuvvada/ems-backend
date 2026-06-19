@@ -4,6 +4,9 @@ import { EmployeeService } from './employee.services';
 import { JwtAuthGuard } from 'src/admin/guards/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { faceUploadConfig } from 'src/commom/config/multer.config';
+import { profilePictureUploadConfig } from 'src/commom/config/profile_picture.config';
+
+
 @Controller('employee')
 export class EmployeeController {
     constructor(private readonly employeeService:EmployeeService){}
@@ -38,6 +41,25 @@ export class EmployeeController {
         file,
         JSON.parse(faceDescriptor),
     );
+    }
 
+
+
+    @Post('upload-profile-picture')
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(
+    FileInterceptor(
+        'profilePicture',
+        profilePictureUploadConfig,
+    ),
+    )
+    async uploadProfilePicture(
+    @Req() req,
+    @UploadedFile() file: Express.Multer.File,
+    ) {
+    return this.employeeService.uploadProfilePicture(
+        req.user.sub,
+        file,
+    );
     }
 }

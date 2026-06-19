@@ -126,5 +126,11 @@ export class Employee{
     @Prop()
     resetPasswordExpires?: Date;
 
+    @Prop({
+    default:
+    "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    })
+    profilePicture: string;
+
 }
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);
