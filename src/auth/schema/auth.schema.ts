@@ -132,5 +132,8 @@ export class Employee{
     })
     profilePicture: string;
 
+    @Prop()
+    refreshToken: String;
+
 }
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);

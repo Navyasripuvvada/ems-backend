@@ -51,46 +51,88 @@ export class AuthService implements OnModuleInit {
   }
 
   async login(dto: LoginDto) {
-    const employee = await this.employeeModel.findOne({
-      email: dto.email,
+  const employee = await this.employeeModel.findOne({
+    email: dto.email,
+  });
+
+  if (!employee) {
+    throw new UnauthorizedException('Invalid credentials');
+  }
+
+  const isMatch = await bcrypt.compare(
+    dto.password,
+    employee.password,
+  );
+
+  if (!isMatch) {
+    throw new UnauthorizedException('Invalid credentials');
+  }
+
+  const payload = {
+    sub: employee._id,
+    email: employee.email,
+    name: employee.fullName,
+    role: employee.role,
+  };
+//access token is here token
+  const token = await this.jwtService.signAsync(payload, {
+    secret: process.env.JWT_ACCESS_SECRET,
+    expiresIn: '15m',
+  });
+
+  
+  const refreshToken = await this.jwtService.signAsync(
+    { sub: employee._id },
+    {
+      secret: process.env.JWT_REFRESH_SECRET,
+      expiresIn: '7d',
+    },
+  );
+
+
+  employee.refreshToken = refreshToken;
+  await employee.save();
+
+  return {
+    message: 'Login successful',
+    token,
+    refreshToken,
+    role: employee.role,
+    name: employee.fullName,
+  };
+}
+
+async refreshToken(token: string) {
+  try {
+    const decoded = this.jwtService.verify(token, {
+      secret: process.env.JWT_REFRESH_SECRET,
     });
 
-    if (!employee) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    const employee = await this.employeeModel.findById(decoded.sub);
 
-   
-    const isMatch = await bcrypt.compare(
-      dto.password,
-      employee.password,
-    );
-
-    if (!isMatch) {
-      throw new UnauthorizedException('Invalid credentials');
+    if (!employee || employee.refreshToken !== token) {
+      throw new UnauthorizedException('Invalid refresh token');
     }
 
     const payload = {
       sub: employee._id,
       email: employee.email,
-      name: employee.fullName,
       role: employee.role,
-      
+      name: employee.fullName,
     };
-    
 
-    const token = await this.jwtService.signAsync(payload,{
-                secret: process.env.JWt_SCERET,
-                expiresIn: "1d",
-                },);
+    const newToken = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_ACCESS_SECRET,
+      expiresIn: '15m',
+    });
 
     return {
-      message: 'Login successful',
-      token: token,
-      role: employee.role,
-      name:employee.fullName,
+      token: newToken,
     };
+  } catch (err) {
+    throw new UnauthorizedException('Token expired or invalid');
   }
-
+}
  async forgotPassword(email: string) {
   const employee = await this.employeeModel.findOne({
     email,

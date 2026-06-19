@@ -67,4 +67,7 @@ export class UpdateEmployeeDto {
    @IsEnum(Gender)
   gender: Gender;
 
+   @IsString()
+   profilePicture?: string; 
+
 }

@@ -22,7 +22,7 @@ import { Attendance,AttendanceSchema } from 'src/attendance/schema/attendance.sc
          imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
-              secret: configService.get<string>("JWT_SECRET"),
+              secret: configService.get<string>("JWT_ACCESS_SECRET"),
             }),
     })
 
