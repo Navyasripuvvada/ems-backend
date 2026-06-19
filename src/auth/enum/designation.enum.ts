@@ -7,4 +7,5 @@ export enum Designation {
   AUTOMATION_TESTER = 'automation_tester',
   PRODUCT_MANAGER = 'product_manager',
   BLOCKCHAIN_DEVELOPER = 'blockchain_developer',
+  DEVOPS = "devops"
 }
