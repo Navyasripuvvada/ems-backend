@@ -1,4 +1,4 @@
-import { Controller, Post, Body,Get,Delete,Param,Put, UseGuards,Req,UseInterceptors,UploadedFile } from '@nestjs/common';
+import { Controller, Post, Body,Get, UseGuards,Req,UseInterceptors,UploadedFile } from '@nestjs/common';
 import { EmployeeService } from './employee.services';
 
 import { JwtAuthGuard } from '../admin/guards/admin.guard';

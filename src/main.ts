@@ -16,7 +16,7 @@ async function bootstrap() {
   ensureCloudinaryConfigured();
   
   app.enableCors({
-    origin:"http://localhost:3000",
+    origin:["http://localhost:3000",  "https://ems-frontend-azure.vercel.app"],
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       credentials: true,
   })
