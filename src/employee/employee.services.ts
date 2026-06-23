@@ -6,7 +6,6 @@ import { Model,Types } from 'mongoose';
 import { Employee,EmployeeDocument } from 'src/auth/schema/auth.schema';
 import { Leave,LeaveDocument } from 'src/leaves/schema/leaves.schema';
 import { LeavesStatus } from 'src/leaves/leavesenum/leave.enum';
-import { S3Service } from 'src/s3/s3.services';
 
 @Injectable()
 export class EmployeeService{
@@ -14,8 +13,7 @@ export class EmployeeService{
         @InjectModel(Employee.name)
         private readonly employeeModel: Model<EmployeeDocument>,
         @InjectModel(Leave.name)
-       private readonly leaveModel: Model<LeaveDocument>,
-      private readonly S3service :S3Service,){}
+       private readonly leaveModel: Model<LeaveDocument>,){}
        
 
 async getEmployeeProfile(employeeId: string) {
@@ -83,58 +81,66 @@ async getEmployeeDashboard(employeeId: string) {
 //Register face
 async registerFace(
   employeeId: string,
-  key: string,
+  imageUrl: string,
   descriptor: number[],
 ) {
-  const employee = await this.employeeModel.findById(employeeId);
+  const employee =
+    await this.employeeModel.findById(employeeId);
 
   if (!employee) {
-    throw new NotFoundException('Employee not found');
+    throw new NotFoundException(
+      'Employee not found',
+    );
   }
 
-  // Check if face already registered
   if (
     employee.isFaceRegistered ||
-    (employee.faceDescriptor && employee.faceDescriptor.length > 0)
+    (employee.faceDescriptor &&
+      employee.faceDescriptor.length > 0)
   ) {
     throw new BadRequestException(
       'Face already registered for this employee',
     );
   }
 
-  // Save S3 image key instead of local file
-  employee.faceImage = key;
+  if (!descriptor || descriptor.length !== 128) {
+    throw new BadRequestException(
+      'Invalid face descriptor',
+    );
+  }
 
-  employee.isFaceRegistered = true;
+  employee.faceImage = imageUrl;
   employee.faceDescriptor = descriptor;
+  employee.isFaceRegistered = true;
 
   await employee.save();
 
   return {
     message: 'Face registered successfully',
-    faceImage: this.S3service.getPublicUrl(key),
-    key,
+    faceImage: imageUrl,
   };
 }
 async uploadProfilePicture(
   employeeId: string,
-  key: string,
+  file: Express.Multer.File,
 ) {
-  const employee = await this.employeeModel.findById(employeeId);
+  const employee =
+    await this.employeeModel.findById(employeeId);
 
   if (!employee) {
-    throw new NotFoundException('Employee not found');
+    throw new NotFoundException(
+      'Employee not found',
+    );
   }
 
-  
-  employee.profilePicture = key;
+  employee.profilePicture = file.path;
 
   await employee.save();
 
   return {
-    message: 'Profile picture updated successfully',
-    profilePicture: this.S3service.getPublicUrl(key),
-    key,
+    message:
+      'Profile picture updated successfully',
+    profilePicture: file.path,
   };
 }
 }

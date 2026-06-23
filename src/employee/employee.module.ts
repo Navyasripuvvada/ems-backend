@@ -9,7 +9,6 @@ import { Employee, EmployeeSchema } from '../auth/schema/auth.schema';
 import { EmployeeController } from './employee.controller';
 import { MailModule } from '../mail/mail.module';
 import { Leave,LeaveSchema } from 'src/leaves/schema/leaves.schema';
-import { S3Module } from 'src/s3/s3.module';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -30,12 +29,12 @@ import { S3Module } from 'src/s3/s3.module';
     }),
 }),
     MailModule,
-    S3Module,
+    
   ],
 
   controllers: [EmployeeController],
 
-  providers: [EmployeeService],
+  providers: [EmployeeService,],
 
   exports: [EmployeeService],
 })

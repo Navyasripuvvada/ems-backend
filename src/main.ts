@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { ensureCloudinaryConfigured } from './commom/config/cloudinary';
 
 async function bootstrap() {
   const port = process.env.PORT || 3000;
@@ -10,6 +11,9 @@ async function bootstrap() {
     await NestFactory.create<NestExpressApplication>(
       AppModule,
     );
+  
+  // Initialize Cloudinary after environment variables are loaded
+  ensureCloudinaryConfigured();
   
   app.enableCors({
     origin:"http://localhost:3000",

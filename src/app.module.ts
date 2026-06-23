@@ -9,7 +9,7 @@ import { AdminModule } from './admin/admin.module';
 import { EmployeeModule } from './employee/employee.module';
 import { LeavesModule } from './leaves/leaves.module';
 import { AttendanceModule } from './attendance/attendance.module';
-import { S3Module } from './s3/s3.module';
+
 
 
 @Module({
@@ -34,7 +34,7 @@ import { S3Module } from './s3/s3.module';
     EmployeeModule,
     LeavesModule,
     AttendanceModule,
-    S3Module,
+   
   ],
   controllers: [AppController],
   providers: [AppService],

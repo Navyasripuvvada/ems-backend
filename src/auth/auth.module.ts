@@ -31,6 +31,6 @@ import { MailModule } from 'src/mail/mail.module';
 
   providers: [AuthService],
 
-  exports: [AuthService],
+  exports: [AuthService,JwtModule,],
 })
 export class AuthModule {}

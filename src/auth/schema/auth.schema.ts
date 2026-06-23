@@ -132,5 +132,8 @@ export class Employee{
     @Prop()
     refreshToken: String;
 
+    @Prop()
+    faceImagePublicId: string;
+
 }
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);

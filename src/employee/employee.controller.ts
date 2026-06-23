@@ -5,6 +5,7 @@ import { JwtAuthGuard } from 'src/admin/guards/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { faceUploadConfig } from 'src/commom/config/multer.config';
 import { profilePictureUploadConfig } from 'src/commom/config/profile_picture.config';
+import { storage } from 'src/commom/config/cloudinary.storage';
 
 
 @Controller('employee')
@@ -28,34 +29,38 @@ export class EmployeeController {
 
 
 
-   @Post('register-face')
-    @UseGuards(JwtAuthGuard)
-    async registerFace(
-    @Req() req,
-    @Body()
-    body: {
-        key: string;
-        faceDescriptor: number[];
-    },
-    ) {
-    return this.employeeService.registerFace(
-        req.user.sub,
-        body.key,
-        body.faceDescriptor,
-    );
-    }
+ @Post('register-face')
+@UseGuards(JwtAuthGuard)
+async registerFace(
+  @Req() req,
+  @Body()
+  body: {
+    imageUrl: string;
+    faceDescriptor: number[];
+  },
+) {
+  return this.employeeService.registerFace(
+    req.user.sub,
+    body.imageUrl,
+    body.faceDescriptor,
+  );
+}
 
 
-
-   @Post('upload-profile-picture')
-    @UseGuards(JwtAuthGuard)
-    async uploadProfilePicture(
-    @Req() req,
-    @Body() body: { key: string },
-    ) {
-    return this.employeeService.uploadProfilePicture(
-        req.user.sub,
-        body.key,
-    );
-    }
+ @Post('upload-profile-picture')
+@UseGuards(JwtAuthGuard)
+@UseInterceptors(
+  FileInterceptor('file', {
+    storage,
+  }),
+)
+async uploadProfilePicture(
+  @Req() req,
+  @UploadedFile() file: Express.Multer.File,
+) {
+  return this.employeeService.uploadProfilePicture(
+    req.user.sub,
+    file,
+  );
+}
 }

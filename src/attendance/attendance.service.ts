@@ -82,20 +82,18 @@ async markAttendance(
       'Invalid face descriptor',
     );
   }
+const distance = this.calculateDistance(
+  employee.faceDescriptor,
+  currentDescriptor,
+);
 
-  const distance = this.calculateDistance(
-    employee.faceDescriptor,
-    currentDescriptor,
-  );
+console.log('Face distance:', distance);
 
-  console.log('Distance:', distance);
+const THRESHOLD = 0.45;
 
-  if (distance > 0.6) {
-    throw new BadRequestException(
-      'Face does not match',
-    );
-  }
-
+if (distance > THRESHOLD) {
+  throw new BadRequestException('Face does not match');
+}
   const today = new Date()
     .toISOString()
     .split('T')[0];
