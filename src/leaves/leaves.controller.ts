@@ -1,7 +1,7 @@
 import { Controller, Post,Put,Param, Body,Req,Get,ForbiddenException,Query, Delete } from '@nestjs/common';
 import { LeavesService } from './leaves.services';
 import { ApplyLeaveDto } from './schema/dto/applyleave.dto';
-import { JwtAuthGuard } from 'src/admin/guards/admin.guard';
+import { JwtAuthGuard } from '../admin/guards/admin.guard';
 import { UseGuards } from '@nestjs/common';
 import { UpdateLeaveStatusDto } from './schema/dto/updateleave.dto';
 import { LeavesStatus } from './leavesenum/leave.enum';

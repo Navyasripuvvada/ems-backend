@@ -1,11 +1,10 @@
 import { Controller, Post, Body,Get,Delete,Param,Put, UseGuards,Req,UseInterceptors,UploadedFile } from '@nestjs/common';
 import { EmployeeService } from './employee.services';
 
-import { JwtAuthGuard } from 'src/admin/guards/admin.guard';
+import { JwtAuthGuard } from '../admin/guards/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { faceUploadConfig } from 'src/commom/config/multer.config';
-import { profilePictureUploadConfig } from 'src/commom/config/profile_picture.config';
-import { storage } from 'src/commom/config/cloudinary.storage';
+
+import { storage } from '../commom/config/cloudinary.storage';
 
 
 @Controller('employee')

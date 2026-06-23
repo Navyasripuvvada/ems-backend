@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { LeavesStatus } from 'src/leaves/leavesenum/leave.enum';
+import { LeavesStatus } from '../../leavesenum/leave.enum';
 
 export class UpdateLeaveStatusDto {
   @IsEnum([LeavesStatus.APPROVED, LeavesStatus.REJECT])

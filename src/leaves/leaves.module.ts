@@ -7,8 +7,8 @@ import { LeaveController } from './leaves.controller';
 import { LeavesService } from './leaves.services';
 
 import { Leave, LeaveSchema } from './schema/leaves.schema';
-import { Employee,EmployeeSchema } from 'src/auth/schema/auth.schema';
-import { Attendance,AttendanceSchema } from 'src/attendance/schema/attendance.schema';
+import { Employee,EmployeeSchema } from '../auth/schema/auth.schema';
+import { Attendance,AttendanceSchema } from '../attendance/schema/attendance.schema';
 
 @Module({
   imports: [

@@ -8,7 +8,7 @@ import { EmployeeService } from './employee.services';
 import { Employee, EmployeeSchema } from '../auth/schema/auth.schema';
 import { EmployeeController } from './employee.controller';
 import { MailModule } from '../mail/mail.module';
-import { Leave,LeaveSchema } from 'src/leaves/schema/leaves.schema';
+import { Leave,LeaveSchema } from '../leaves/schema/leaves.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([

@@ -1,6 +1,6 @@
 import { Post,UseGuards,Req,Controller,Body,Get,Query,ForbiddenException} from "@nestjs/common";
 import { AttendanceService } from "./attendance.service";
-import { JwtAuthGuard } from "src/admin/guards/admin.guard";
+import { JwtAuthGuard } from "../admin/guards/admin.guard";
 
 @Controller('attendance')
 export class AttendanceController {

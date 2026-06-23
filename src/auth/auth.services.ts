@@ -11,11 +11,10 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Employee, EmployeeDocument} from './schema/auth.schema';
 import {LoginDto} from './dto/login.dto';
-import { Role } from '../commom/enum/role.enum';
 import { EmploymentType } from './enum/employmenttype.enum';
 import { Designation } from './enum/designation.enum';
 import { Department } from './enum/department.enum';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import * as crypto from 'crypto';
 
 @Injectable()

@@ -3,9 +3,9 @@ import {Injectable, BadRequestException,NotFoundException} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose';
 import { Model,Types } from 'mongoose';
 
-import { Employee,EmployeeDocument } from 'src/auth/schema/auth.schema';
-import { Leave,LeaveDocument } from 'src/leaves/schema/leaves.schema';
-import { LeavesStatus } from 'src/leaves/leavesenum/leave.enum';
+import { Employee,EmployeeDocument } from '../auth/schema/auth.schema';
+import { Leave,LeaveDocument } from '../leaves/schema/leaves.schema';
+import { LeavesStatus } from '../leaves/leavesenum/leave.enum';
 
 @Injectable()
 export class EmployeeService{

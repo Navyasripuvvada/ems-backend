@@ -3,8 +3,8 @@ import { AdminService } from './admin.services';
 import { AddEmployeeDto } from './dto/addEmployee.dto';
 import { SetPasswordDto } from './dto/setpassword.dto';
 import { UpdateEmployeeDto } from './dto/updateemployee.dto';
-import { Department } from 'src/auth/enum/department.enum';
-import { Status } from 'src/auth/enum/status.enum';
+import { Department } from '../auth/enum/department.enum';
+import { Status } from '../auth/enum/status.enum';
 import { JwtAuthGuard } from './guards/admin.guard';
 @Controller('admin')
 export class AdminController {

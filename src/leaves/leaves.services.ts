@@ -1,20 +1,17 @@
 import {
   Injectable,
-  UnauthorizedException,
-  OnModuleInit,
-  Inject,NotFoundException,BadRequestException,
+  NotFoundException,BadRequestException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Leave,LeaveDocument } from './schema/leaves.schema';
 import { ApplyLeaveDto } from './schema/dto/applyleave.dto';
 import { Types } from 'mongoose';
 import { LeavesStatus } from './leavesenum/leave.enum';
-import { Employee, EmployeeDocument } from 'src/auth/schema/auth.schema';
+import { Employee, EmployeeDocument } from '../auth/schema/auth.schema';
 import { UpdateLeaveStatusDto } from './schema/dto/updateleave.dto';
-import { Attendance,AttendanceDocument } from 'src/attendance/schema/attendance.schema';
-import { AttendanceStatus } from 'src/attendance/enum/attendance.enum';
+import { Attendance,AttendanceDocument } from '../attendance/schema/attendance.schema';
+import { AttendanceStatus } from '../attendance/enum/attendance.enum';
 
 @Injectable()
 export class LeavesService{

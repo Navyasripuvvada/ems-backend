@@ -5,20 +5,20 @@ import {
 
   
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { Employee, EmployeeDocument} from '../auth/schema/auth.schema';
 import { AddEmployeeDto } from './dto/addEmployee.dto';
 import {randomBytes} from 'crypto';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import { SetPasswordDto } from './dto/setpassword.dto';
 import { UpdateEmployeeDto } from './dto/updateemployee.dto';
-import { Department } from 'src/auth/enum/department.enum';
-import { Status } from 'src/auth/enum/status.enum';
-import { Leave,LeaveDocument } from 'src/leaves/schema/leaves.schema';
-import { LeavesStatus } from 'src/leaves/leavesenum/leave.enum';
+import { Department } from '../auth/enum/department.enum';
+import { Status } from '../auth/enum/status.enum';
+import { Leave,LeaveDocument } from '../leaves/schema/leaves.schema';
+import { LeavesStatus } from '../leaves/leavesenum/leave.enum';
 
 
 @Injectable()
