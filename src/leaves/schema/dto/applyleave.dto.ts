@@ -11,5 +11,8 @@ export class ApplyLeaveDto {
   @IsDateString()
   toDate: string;
 
+  @IsString()
+  subject: string;
+
   
 }

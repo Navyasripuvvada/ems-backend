@@ -40,6 +40,9 @@ export class Leave {
    @Prop()
    leaveType:string;
 
+   @Prop()
+   subject: string;
+
  
 }
 
