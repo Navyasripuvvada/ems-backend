@@ -16,7 +16,7 @@ export class MailService{
     token: string,
   ) {
     try {
-    const setupLink = `http://localhost:3000/set-password?token=${token}`;
+    const setupLink = `https://ems-frontend-azure.vercel.app/set-password?token=${token}`;
 
     await this.transporter.sendMail({
       from: process.env.EMAIL_USER,

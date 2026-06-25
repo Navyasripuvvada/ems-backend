@@ -24,8 +24,8 @@ export class AttendanceService{
    ){}
 
  private calculateDistance(
-  descriptor1: number[],
-  descriptor2: number[],
+  descriptor1: number[],//vector of current/live face
+  descriptor2: number[],//stored vector of that employee
 ): number {
   let sum = 0;
 
