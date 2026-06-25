@@ -3,8 +3,8 @@ import { EmployeeService } from './employee.services';
 
 import { JwtAuthGuard } from '../admin/guards/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import * as multer from 'multer';
 
-import { storage } from '../commom/config/cloudinary.storage';
 
 
 @Controller('employee')
@@ -30,7 +30,9 @@ export class EmployeeController {
 
 @Post('register-face')
 @UseGuards(JwtAuthGuard)
-@UseInterceptors(FileInterceptor('file'))
+@UseInterceptors(FileInterceptor('file',{
+    storage: multer.memoryStorage(),
+  }))
 async registerFace(
   @Req() req,
   @UploadedFile() file: Express.Multer.File,
