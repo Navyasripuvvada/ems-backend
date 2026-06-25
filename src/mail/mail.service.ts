@@ -41,7 +41,7 @@ export class MailService{
 ) {
   try {
     const resetLink =
-      `http://localhost:3000/reset-password?token=${token}`;
+      `https://ems-frontend-azure.vercel.app/reset-password?token=${token}`;
 
     const info = await this.transporter.sendMail({
       from: process.env.EMAIL_USER,
