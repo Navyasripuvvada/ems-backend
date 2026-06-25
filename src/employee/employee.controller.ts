@@ -28,19 +28,17 @@ export class EmployeeController {
 
 
 
- @Post('register-face')
+@Post('register-face')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(FileInterceptor('file'))
 async registerFace(
   @Req() req,
-  @Body()
-  body: {
-    imageUrl: string;
-    faceDescriptor: number[];
-  },
+  @UploadedFile() file: Express.Multer.File,
+  @Body() body: { faceDescriptor: number[] },
 ) {
   return this.employeeService.registerFace(
     req.user.sub,
-    body.imageUrl,
+    file,
     body.faceDescriptor,
   );
 }
@@ -48,11 +46,7 @@ async registerFace(
 
  @Post('upload-profile-picture')
 @UseGuards(JwtAuthGuard)
-@UseInterceptors(
-  FileInterceptor('file', {
-    storage,
-  }),
-)
+@UseInterceptors(FileInterceptor('file'))
 async uploadProfilePicture(
   @Req() req,
   @UploadedFile() file: Express.Multer.File,

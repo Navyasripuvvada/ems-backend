@@ -6,6 +6,7 @@ import { Model,Types } from 'mongoose';
 import { Employee,EmployeeDocument } from '../auth/schema/auth.schema';
 import { Leave,LeaveDocument } from '../leaves/schema/leaves.schema';
 import { LeavesStatus } from '../leaves/leavesenum/leave.enum';
+import cloudinary from '../commom/config/cloudinary';
 
 @Injectable()
 export class EmployeeService{
@@ -81,7 +82,7 @@ async getEmployeeDashboard(employeeId: string) {
 //Register face
 async registerFace(
   employeeId: string,
-  imageUrl: string,
+  file: Express.Multer.File,
   descriptor: number[],
 ) {
   const employee =
@@ -108,8 +109,21 @@ async registerFace(
       'Invalid face descriptor',
     );
   }
+   const uploadResult: any = await new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'face-images' },
+      (error, result) => {
+        if (error) return reject(error);
+        if (!result) return reject(new Error('Upload failed'));
+        resolve(result);
+      },
+    );
 
-  employee.faceImage = imageUrl;
+    stream.end(file.buffer);
+  });
+
+
+  employee.faceImage = uploadResult.secure_url;
   employee.faceDescriptor = descriptor;
   employee.isFaceRegistered = true;
 
@@ -117,7 +131,7 @@ async registerFace(
 
   return {
     message: 'Face registered successfully',
-    faceImage: imageUrl,
+    faceImage: uploadResult.secure_url,
   };
 }
 async uploadProfilePicture(
@@ -133,14 +147,29 @@ async uploadProfilePicture(
     );
   }
 
-  employee.profilePicture = file.path;
+   const uploadResult: any = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'profile-pictures',
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          if (!result) return reject(new Error('Upload failed'));
+          resolve(result);
+        },
+      );
 
-  await employee.save();
+      stream.end(file.buffer);
+    });
+
+   
+    employee.profilePicture = uploadResult.secure_url;
+    await employee.save();
 
   return {
     message:
       'Profile picture updated successfully',
-    profilePicture: file.path,
+    profilePicture:uploadResult.secure_url,
   };
 }
 }
