@@ -30,17 +30,17 @@ export class EmployeeController {
 
 @Post('register-face')
 @UseGuards(JwtAuthGuard)
-@UseInterceptors(FileInterceptor('file',{
-    storage: multer.memoryStorage(),
-  }))
 async registerFace(
   @Req() req,
-  @UploadedFile() file: Express.Multer.File,
-  @Body() body: { faceDescriptor: number[] },
+  @Body()
+  body: {
+    imageUrl: string;
+    faceDescriptor: number[];
+  },
 ) {
   return this.employeeService.registerFace(
     req.user.sub,
-    file,
+    body.imageUrl,
     body.faceDescriptor,
   );
 }

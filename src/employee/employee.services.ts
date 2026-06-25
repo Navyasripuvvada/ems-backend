@@ -82,7 +82,7 @@ async getEmployeeDashboard(employeeId: string) {
 //Register face
 async registerFace(
   employeeId: string,
-  file: Express.Multer.File,
+   imageUrl:string,
   descriptor: number[],
 ) {
   const employee =
@@ -109,21 +109,10 @@ async registerFace(
       'Invalid face descriptor',
     );
   }
-   const uploadResult: any = await new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: 'face-images' },
-      (error, result) => {
-        if (error) return reject(error);
-        if (!result) return reject(new Error('Upload failed'));
-        resolve(result);
-      },
-    );
-
-    stream.end(file.buffer);
-  });
+ 
 
 
-  employee.faceImage = uploadResult.secure_url;
+  employee.faceImage =  imageUrl;
   employee.faceDescriptor = descriptor;
   employee.isFaceRegistered = true;
 
@@ -131,7 +120,7 @@ async registerFace(
 
   return {
     message: 'Face registered successfully',
-    faceImage: uploadResult.secure_url,
+    faceImage:  imageUrl,
   };
 }
 async uploadProfilePicture(
