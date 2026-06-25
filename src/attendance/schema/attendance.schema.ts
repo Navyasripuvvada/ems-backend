@@ -13,7 +13,7 @@ export class Attendance {
   date: Date;
 
   @Prop()
-  checkInTime: string;
+  checkInTime: Date;
 
   @Prop()
   checkOutTime: string;

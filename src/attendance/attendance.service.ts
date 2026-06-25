@@ -113,8 +113,7 @@ if (distance > THRESHOLD) {
     await this.attendanceModel.create({
       employeeId: new Types.ObjectId(employeeId),
       date: today,
-      checkInTime:
-        new Date().toLocaleTimeString(),
+      checkInTime: new Date(),
       status: AttendanceStatus.PRESENT,
     });
 
