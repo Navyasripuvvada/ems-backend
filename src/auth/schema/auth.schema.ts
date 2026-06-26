@@ -129,8 +129,8 @@ export class Employee{
     @Prop()
     profilePicture: string;
 
-    @Prop()
-    refreshToken: String;
+    @Prop({ type: String, default: null })
+    refreshToken: String | null;
 
     @Prop()
     faceImagePublicId: string;

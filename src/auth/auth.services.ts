@@ -101,6 +101,7 @@ export class AuthService implements OnModuleInit {
   };
 }
 
+
 async refreshToken(token: string) {
   try {
     const decoded = this.jwtService.verify(token, {
@@ -131,6 +132,18 @@ async refreshToken(token: string) {
   } catch (err) {
     throw new UnauthorizedException('Token expired or invalid');
   }
+}
+
+async logout(employeeId:string) {
+  const employee = await this.employeeModel.findById(employeeId)
+  if (employee) {
+    employee.refreshToken = null;
+    await employee.save();
+  }
+
+  return {
+    message: "Logout successful",
+  };
 }
  async forgotPassword(email: string) {
   const employee = await this.employeeModel.findOne({
