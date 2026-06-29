@@ -76,7 +76,7 @@ export class WFHService{
             if (status) {
                 pipeline.push({
                 $match: {
-                    WFHStatus: status,
+                    WfhStatus: WFHStatus,
                 },
                 });
             }
@@ -87,7 +87,7 @@ export class WFHService{
                     reason: 1,
                     From: 1,
                     to: 1,
-                    WFHstatus: 1,
+                    WfhStatus: 1,
                     createdAt: 1,
                     'employeeDetails.email': 1,
                     'employeeDetails.name': 1,
@@ -120,7 +120,7 @@ export class WFHService{
 
             if (
                 WFH.WfhStatus !== WFHStatus.APPROVED &&
-                updateWfhStatusDto.WFHStatus === WFHStatus.APPROVED
+                updateWfhStatusDto.WfhStatus === WFHStatus.APPROVED
             ) {
                 const employee = await this.employeeModel.findById(
                 WFH.employeeId,
@@ -163,7 +163,7 @@ export class WFHService{
                 }
             }
 
-            WFH.WfhStatus = updateWfhStatusDto.WFHStatus;
+            WFH.WfhStatus = updateWfhStatusDto.WfhStatus;
 
             await WFH.save();
 
