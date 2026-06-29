@@ -228,13 +228,14 @@ export class LeavesService{
                 },
             ]);
             }
-    async getLeaveBalance(employeeId: string) {
-    const employee = await this.employeeModel.findById(employeeId);
+   async getLeaveBalance(employeeId: string) {
+  const employee = await this.employeeModel.findById(employeeId);
 
-    if (!employee) {
-        throw new NotFoundException('Employee not found');
-    }
-    const approvedLeaves = await this.leaveModel.aggregate([
+  if (!employee) {
+    throw new NotFoundException('Employee not found');
+  }
+
+  const approvedLeaves = await this.leaveModel.aggregate([
     {
       $match: {
         employeeId: new Types.ObjectId(employeeId),
@@ -249,15 +250,24 @@ export class LeavesService{
     },
   ]);
 
-    const leavesTaken = approvedLeaves[0]?.total || 0;
-    const totalLeaves = 15 - leavesTaken;
+  const totalLeaves = 15;
+  const leavesTaken = approvedLeaves[0]?.total || 0;
+  const remainingLeaves = totalLeaves - leavesTaken;
 
-    return {
-        employeeId: employee._id,
-        fullName: employee.fullName,
-        totalLeaves,
-    };
-    }
+  const percentageLeft = Math.round(
+    (remainingLeaves / totalLeaves) * 100,
+  );
+
+  return {
+    employeeId: employee._id,
+    fullName: employee.fullName,
+    totalLeaves,
+    leavesTaken,
+    remainingLeaves,
+    percentageLeft,
+    status: remainingLeaves >= 5 ? 'Healthy Balance' : 'Low Balance',
+  };
+}
    async getMyLeaveHistory(employeeId: string) {
     const leaves = await this.leaveModel
         .find({  employeeId: new Types.ObjectId(employeeId) })

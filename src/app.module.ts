@@ -9,6 +9,7 @@ import { AdminModule } from './admin/admin.module';
 import { EmployeeModule } from './employee/employee.module';
 import { LeavesModule } from './leaves/leaves.module';
 import { AttendanceModule } from './attendance/attendance.module';
+import { WFHModule } from './wfh/wfh.module';
 
 
 
@@ -34,6 +35,7 @@ import { AttendanceModule } from './attendance/attendance.module';
     EmployeeModule,
     LeavesModule,
     AttendanceModule,
+    WFHModule,
    
   ],
   controllers: [AppController],
