@@ -29,6 +29,9 @@ export class WFH{
     })
    WfhStatus:WFHStatus
 
+   @Prop({ })
+   subject:String;
+
 
 
 }

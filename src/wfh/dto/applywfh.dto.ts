@@ -11,6 +11,9 @@ export class ApplyWFHDto {
   @IsDateString()
   to: Date;
 
+  @IsString()
+  subject:string;
+
   
 
   
